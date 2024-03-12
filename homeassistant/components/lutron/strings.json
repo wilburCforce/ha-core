@@ -43,5 +43,23 @@
       "title": "The Lutron integration deprecated fan turned off",
       "description": "Fan entities have been added to the Lutron integration.\nPreviously fans were created as lights; this behavior is now deprecated.\n\nYour configuration just turned off a fan created as a light. You should migrate your scenes and automations to use the new fan entity.\n\nWhen you are done migrating your automations and are ready to have the deprecated light entity removed, disable the entity and restart Home Assistant.\n\nAn issue will be created each time the incorrect entity is used to remind you to migrate."
     }
+  },
+  "entity": {
+    "climate": {
+      "lutron": {
+        "state_attributes": {
+          "preset_mode": {
+            "state": {
+              "following_schedule": "Following Schedule",
+              "permanent_hold": "Permanent Hold",
+              "permanent_hold_eco": "Eco Permanent Hold",
+              "temporary_hold": "Temporary Hold",
+              "temporary_hold_eco": "Eco Temporary Hold",
+              "emergency_heat": "Emergency Heat"
+            }
+          }
+        }
+      }
+    }
   }
 }

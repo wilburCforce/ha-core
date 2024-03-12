@@ -2,7 +2,16 @@
 from dataclasses import dataclass
 import logging
 
-from pylutron import Button, Keypad, Led, Lutron, LutronEvent, OccupancyGroup, Output
+from pylutron import (
+    HVAC,
+    Button,
+    Keypad,
+    Led,
+    Lutron,
+    LutronEvent,
+    OccupancyGroup,
+    Output,
+)
 import voluptuous as vol
 
 from homeassistant import config_entries
@@ -26,6 +35,7 @@ from .const import DOMAIN
 
 PLATFORMS = [
     Platform.BINARY_SENSOR,
+    Platform.CLIMATE,
     Platform.COVER,
     Platform.FAN,
     Platform.LIGHT,
@@ -169,6 +179,7 @@ class LutronData:
     buttons: list[LutronButton]
     covers: list[tuple[str, Output]]
     fans: list[tuple[str, Output]]
+    hvacs: list[tuple[str, HVAC]]
     lights: list[tuple[str, Output]]
     scenes: list[tuple[str, Keypad, Button, Led]]
     switches: list[tuple[str, Output]]
@@ -195,10 +206,12 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
         buttons=[],
         covers=[],
         fans=[],
+        hvacs=[],
         lights=[],
         scenes=[],
         switches=[],
     )
+    _LOGGER.info("############## LUTRON DATA %s", vars(lutron_client))
     # Sort our devices into types
     _LOGGER.debug("Start adding devices")
     for area in lutron_client.areas:
@@ -292,6 +305,9 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
                 area.occupancy_group.legacy_uuid,
                 entry_data.client.guid,
             )
+    for hvac in lutron_client.hvacs:
+        _LOGGER.info(f"HASSDATA CLIMATE: {hvac.name} DATA: {str(hvac)}")  # noqa: G004
+        entry_data.hvacs.append((hvac.name, hvac))
 
     device_registry.async_get_or_create(
         config_entry_id=config_entry.entry_id,
